@@ -8,14 +8,14 @@ jobs:
   review-with-tracking:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Изменил на write, чтобы Claude мог читать и писать файлы
+      contents: write
       pull-requests: write
       id-token: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4 # Рекомендуется v4 для стабильности
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Нужно 0 для полного анализа изменений
+          fetch-depth: 0
 
       - name: PR Review with Progress Tracking
         uses: anthropics/claude-code-action@v1
@@ -36,7 +36,6 @@ jobs:
             IMPORTANT: Use 'create_inline_comment' to leave feedback directly on specific lines of code in the "Files Changed" tab.
             If there are issues, do not just leave a summary.
 
-          # Здесь был лишний пробел, теперь он исправлен:
           claude_args: >
             /review 
             "Review and leave inline comments for all issues found using the create_inline_comment tool." 
