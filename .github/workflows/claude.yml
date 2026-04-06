@@ -1,8 +1,5 @@
 name: PR Review with Progress Tracking
 
-# This example demonstrates how to use the track_progress feature to get
-# visual progress tracking for PR reviews, similar to v0.x agent mode.
-
 on:
   pull_request:
     types: [opened, synchronize, ready_for_review, reopened]
@@ -11,69 +8,37 @@ jobs:
   review-with-tracking:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write  # Изменил на write, чтобы Claude мог читать и писать файлы
       pull-requests: write
       id-token: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4 # Рекомендуется v4 для стабильности
         with:
-          fetch-depth: 1
+          fetch-depth: 0 # Нужно 0 для полного анализа изменений
 
       - name: PR Review with Progress Tracking
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-
-          # Enable progress tracking
           track_progress: true
-
-          # Your custom review instructions
+          
           prompt: |
-            REPO: ${{ github.repository }}
-            PR NUMBER: ${{ github.event.pull_request.number }}
+            Perform a comprehensive code review of PR #${{ github.event.pull_request.number }} in ${{ github.repository }}.
+            
+            Focus areas:
+            1. Code Quality & Clean Code
+            2. Security vulnerabilities
+            3. Performance bottlenecks
+            4. Testing coverage
+            5. Documentation
+            
+            IMPORTANT: Use 'create_inline_comment' to leave feedback directly on specific lines of code in the "Files Changed" tab.
+            If there are issues, do not just leave a summary.
 
-            Perform a comprehensive code review with the following focus areas:
-
-            1. **Code Quality**
-               - Clean code principles and best practices
-               - Proper error handling and edge cases
-               - Code readability and maintainability
-
-            2. **Security**
-               - Check for potential security vulnerabilities
-               - Validate input sanitization
-               - Review authentication/authorization logic
-
-            3. **Performance**
-               - Identify potential performance bottlenecks
-               - Review database queries for efficiency
-               - Check for memory leaks or resource issues
-
-            4. **Testing**
-               - Verify adequate test coverage
-               - Review test quality and edge cases
-               - Check for missing test scenarios
-
-            5. **Documentation**
-               - Ensure code is properly documented
-               - Verify README updates for new features
-               - Check API documentation accuracy
-
-            Provide detailed feedback using inline comments for specific issues.
-            Use top-level comments for general observations or praise.
-
-            IMPORTANT: Use the 'create_inline_comment' tool to leave your feedback directly on the specific lines of code in the PR. 
-            Do not provide a summary if there are specific code issues to point out.
-
-          # Tools for comprehensive PR review
-           claude_args: >
+          # Здесь был лишний пробел, теперь он исправлен:
+          claude_args: >
             /review 
-            "Review this PR and leave inline comments for every issue found. Use the create_inline_comment tool." 
+            "Review and leave inline comments for all issues found using the create_inline_comment tool." 
             --post 
             --yes
-# When track_progress is enabled:
-# - Creates a tracking comment with progress checkboxes
-# - Includes all PR context (comments, attachments, images)
-# - Updates progress as the review proceeds
-# - Marks as completed when done
