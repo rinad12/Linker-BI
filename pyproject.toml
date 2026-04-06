@@ -16,13 +16,13 @@ link-mode = "copy"
 line-length = 88
 
 [tool.ruff.lint]
-select = ["E", "F", "I"]
+select = ["E", "F", "I", "B", "S"]
 
 [project.scripts]
-bi-agent = "main:main"
+bi-agent = "bi_agent.main:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["."]
+packages = ["bi_agent"]
 
 [build-system]
 requires = ["hatchling"]

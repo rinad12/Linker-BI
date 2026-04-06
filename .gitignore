@@ -43,7 +43,6 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
-pytest.ini
 
 # Jupyter
 .ipynb_checkpoints
@@ -68,5 +67,4 @@ Thumbs.db
 
 
 # Claude
-CLAUDE.md
 .claude
