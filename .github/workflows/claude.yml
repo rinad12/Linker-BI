@@ -1,43 +1,27 @@
-name: PR Review with Progress Tracking
+name: Claude Review
 
 on:
   pull_request:
-    types: [opened, synchronize, ready_for_review, reopened]
+    types: [opened, synchronize, reopened]
 
 jobs:
-  review-with-tracking:
+  review:
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
       id-token: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: PR Review with Progress Tracking
-        uses: anthropics/claude-code-action@v1
+      - uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           track_progress: true
-          
           prompt: |
-            Perform a comprehensive code review of PR #${{ github.event.pull_request.number }} in ${{ github.repository }}.
-            
-            Focus areas:
-            1. Code Quality & Clean Code
-            2. Security vulnerabilities
-            3. Performance bottlenecks
-            4. Testing coverage
-            5. Documentation
-            
-            IMPORTANT: Use 'create_inline_comment' to leave feedback directly on specific lines of code in the "Files Changed" tab.
-            If there are issues, do not just leave a summary.
-
-          claude_args: >
-            /review 
-            "Review and leave inline comments for all issues found using the create_inline_comment tool." 
-            --post 
-            --yes
+            Conduct a code review for PR #${{ github.event.pull_request.number }}. 
+            Focus on quality, security, and performance. 
+            Use 'create_inline_comment' to leave feedback on specific lines in the Files Changed tab.
+          claude_args: '/review "Leave inline comments for all issues found using the create_inline_comment tool." --post --yes'
