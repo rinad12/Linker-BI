@@ -18,14 +18,11 @@ lib/
 lib64/
 
 # Virtual environments
-.env
 .venv
 env/
 venv/
 ENV/
 
-# uv
-.python-version
 
 # Distribution / packaging
 .Python
@@ -68,3 +65,8 @@ Thumbs.db
 !.env.example
 *.pem
 *.key
+
+
+# Claude
+CLAUDE.md
+.claude
