@@ -3,6 +3,10 @@ name: Claude Review
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
 
 jobs:
   review:
@@ -20,6 +24,7 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          trigger_phrase: "@claude"
           prompt: |
             Conduct a thorough code review for PR #${{ github.event.pull_request.number }}.
             Focus on quality, security, and performance issues.
@@ -36,4 +41,9 @@ jobs:
               -f side="RIGHT"
 
             Review all changed files and leave specific, actionable inline comments.
+
+            After all inline comments, post a general summary comment on the PR using:
+            gh pr comment ${{ github.event.pull_request.number }} --body "<summary>"
+
+            The summary should include: overall assessment, key findings, and any blocking issues.
           claude_args: "--allowedTools Bash"
