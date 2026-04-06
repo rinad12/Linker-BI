@@ -26,10 +26,20 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           trigger_phrase: "@claude"
           prompt: |
-            Conduct a thorough code review for PR #${{ github.event.pull_request.number }}.
-            Focus on quality, security, and performance issues.
+            Before reviewing, fetch the context for PR #${{ github.event.pull_request.number }}:
 
-            For every issue found, use the Bash tool to post an inline comment directly on the
+            1. Get the PR body and linked issues:
+               gh pr view ${{ github.event.pull_request.number }} --json title,body,closingIssuesReferences
+
+            2. For each linked issue, fetch its description:
+               gh issue view <issue_number> --json title,body,labels
+
+            Use this issue context to understand the INTENDED SCOPE of this PR.
+            Only review changes that are relevant to the task described in the linked issue(s).
+            Do NOT suggest improvements, refactors, or features outside that scope — even if you notice them.
+            If you see out-of-scope issues, briefly mention them in the summary as "out of scope for this PR" without blocking.
+
+            For every in-scope issue found, use the Bash tool to post an inline comment directly on the
             relevant line using the GitHub API:
 
             gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/comments \
@@ -45,5 +55,5 @@ jobs:
             After all inline comments, post a general summary comment on the PR using:
             gh pr comment ${{ github.event.pull_request.number }} --body "<summary>"
 
-            The summary should include: overall assessment, key findings, and any blocking issues.
+            The summary should include: linked issue(s), overall assessment, key findings, and any blocking issues.
           claude_args: "--allowedTools Bash"
