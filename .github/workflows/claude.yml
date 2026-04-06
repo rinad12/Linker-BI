@@ -8,7 +8,7 @@ jobs:
   review:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       pull-requests: write
       id-token: write
     steps:
@@ -19,9 +19,21 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          track_progress: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           prompt: |
-            Conduct a code review for PR #${{ github.event.pull_request.number }}. 
-            Focus on quality, security, and performance. 
-            Use 'create_inline_comment' to leave feedback on specific lines in the Files Changed tab.
-          claude_args: '/review "Leave inline comments for all issues found using the create_inline_comment tool." --post --yes'
+            Conduct a thorough code review for PR #${{ github.event.pull_request.number }}.
+            Focus on quality, security, and performance issues.
+
+            For every issue found, use the Bash tool to post an inline comment directly on the
+            relevant line using the GitHub API:
+
+            gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/comments \
+              --method POST \
+              -f body="<your comment>" \
+              -f commit_id="${{ github.event.pull_request.head.sha }}" \
+              -f path="<file path>" \
+              -F line=<line number> \
+              -f side="RIGHT"
+
+            Review all changed files and leave specific, actionable inline comments.
+          allowed_tools: "Bash"
