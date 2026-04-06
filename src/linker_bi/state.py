@@ -1,4 +1,5 @@
-from langgraph.graph import MessagesState 
+from langgraph.graph import MessagesState
+
 
 class LNKState(MessagesState):
     metadata: dict | None = None
