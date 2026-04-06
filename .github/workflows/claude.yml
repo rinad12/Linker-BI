@@ -36,4 +36,4 @@ jobs:
               -f side="RIGHT"
 
             Review all changed files and leave specific, actionable inline comments.
-          allowed_tools: "Bash"
+          claude_args: "--allowedTools Bash"
