@@ -7,9 +7,11 @@ requires-python = ">=3.13"
 dependencies = [
     "langchain-openai>=1.1.12",
     "langgraph>=1.1.6",
+    "psycopg2-binary>=2.9.11",
+    "pydantic>=2.12.5",
     "pydantic-ai>=1.77.0",
     "pydantic-settings>=2.13.1",
-    "pydentic>=0.0.1.dev3",
+    "sqlalchemy>=2.0.49",
 ]
 
 [dependency-groups]
