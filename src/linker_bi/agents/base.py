@@ -25,7 +25,7 @@ class LNKBaseAgent(ABC):
     Example::
 
         class MyAgent(LNKBaseAgent):
-            async def execute(self, state: LNKState) -> LNKState:
+            async def execute(self, state: LNKState) -> dict:
                 response = await self.llm.ainvoke(state["messages"])
                 state["messages"].append(response)
                 return {"messages": [response]}
