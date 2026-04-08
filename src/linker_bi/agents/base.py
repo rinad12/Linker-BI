@@ -28,14 +28,14 @@ class LNKBaseAgent(ABC):
             async def execute(self, state: LNKState) -> LNKState:
                 response = await self.llm.ainvoke(state["messages"])
                 state["messages"].append(response)
-                return state
+                return {"messages": [response]}
     """
 
     def __init__(self, llm: BaseChatModel) -> None:
         self.llm = llm
 
     @abstractmethod
-    async def execute(self, state: LNKState) -> LNKState:
+    async def execute(self, state: LNKState) -> dict:
         """Run agent logic against the current graph state and return updated state.
 
         Args:
