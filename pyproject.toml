@@ -17,7 +17,11 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["ruff>=0.15.9"]
+dev = [
+    "mypy>=1.15.0",
+    "pre-commit>=4.5.1",
+    "ruff>=0.15.9",
+]
 
 [build-system]
 requires = ["hatchling"]
@@ -35,3 +39,8 @@ line-length = 88
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "S"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+ignore_missing_imports = true
