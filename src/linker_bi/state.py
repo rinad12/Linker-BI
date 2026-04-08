@@ -1,7 +1,9 @@
+from typing import Any
+
 from langgraph.graph import MessagesState
 
 
-class LNKState(MessagesState):
+class LNKState(MessagesState):  # type: ignore[misc]
     """Central graph state shared across all agents in the Linker BI pipeline.
 
     Inherits ``messages`` from :class:`~langgraph.graph.MessagesState`, which
@@ -19,6 +21,6 @@ class LNKState(MessagesState):
             agents to build queries.  ``None`` when not yet resolved.
     """
 
-    metadata: dict | None = None
+    metadata: dict[str, Any] | None = None
     plan: str | None = None
-    semantic_layer: dict | None = None
+    semantic_layer: dict[str, Any] | None = None
