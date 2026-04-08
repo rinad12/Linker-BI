@@ -1,3 +1,6 @@
+from functools import lru_cache
+from typing import Literal
+
 from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -10,14 +13,14 @@ class Settings(BaseSettings):
     )
 
     # OpenAI
-    openai_api_key: str
+    openai_api_key: str | None = None
 
-    # Antrhopic
-    anthropic_api_key: str
+    # Anthropic
+    anthropic_api_key: str | None = None
 
     # Gemini
-    google_api_key: str
-    google_cse_id: str
+    google_api_key: str | None = None
+    google_cse_id: str | None = None
 
     # Database
     database_url: PostgresDsn
@@ -26,8 +29,10 @@ class Settings(BaseSettings):
     checkpoint_db_url: PostgresDsn | None = None
 
     # Application
-    log_level: str = "INFO"
-    environment: str = "development"
+    log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
+    environment: Literal["development", "staging", "production"] = "development"
 
 
-settings = Settings()  # type: ignore[call-arg]
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()  # type: ignore[call-arg]
