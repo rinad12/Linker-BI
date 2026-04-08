@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from typing import Any
 
 from langchain_core.language_models import BaseChatModel
 
@@ -34,7 +35,7 @@ class LNKBaseAgent(ABC):
         self.llm = llm
 
     @abstractmethod
-    async def execute(self, state: LNKState) -> dict:
+    async def execute(self, state: LNKState) -> dict[str, Any]:
         """Run agent logic against the current graph state and return updated state.
 
         Args:
