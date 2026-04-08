@@ -27,7 +27,6 @@ class LNKBaseAgent(ABC):
         class MyAgent(LNKBaseAgent):
             async def execute(self, state: LNKState) -> dict:
                 response = await self.llm.ainvoke(state["messages"])
-                state["messages"].append(response)
                 return {"messages": [response]}
     """
 
@@ -43,6 +42,6 @@ class LNKBaseAgent(ABC):
                 passed in by the LangGraph runtime.
 
         Returns:
-            An updated :class:`~linker_bi.state.LNKState` with any fields
-            modified by this agent's logic.
+            A partial dict containing only the state fields modified by
+            this agent's logic, which LangGraph merges into the graph state.
         """
