@@ -1291,6 +1291,7 @@ name = "linker-bi"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "langchain-core" },
     { name = "langchain-openai" },
     { name = "langgraph" },
     { name = "psycopg2-binary" },
@@ -1307,6 +1308,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "langchain-core", specifier = ">=0.3" },
     { name = "langchain-openai", specifier = ">=1.1.12" },
     { name = "langgraph", specifier = ">=1.1.6" },
     { name = "psycopg2-binary", specifier = ">=2.9.11" },
