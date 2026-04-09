@@ -1,4 +1,5 @@
-from typing import Any
+import operator
+from typing import Annotated, Any
 
 from langgraph.graph import MessagesState
 
@@ -11,16 +12,22 @@ class LNKState(MessagesState):  # type: ignore[misc]
 
     Attributes:
         messages: Inherited list of chat messages (from MessagesState).
-        metadata: Arbitrary key-value pairs for pipeline-wide context (e.g.
-            user ID, request ID, data-source identifiers).  ``None`` when not
-            yet populated.
-        plan: A textual execution plan produced by a planning agent.  ``None``
-            before the planning step runs.
-        semantic_layer: Structured representation of the semantic layer (e.g.
-            metric definitions, dimension hierarchies) used by downstream
-            agents to build queries.  ``None`` when not yet resolved.
+        plan: Ordered list of steps representing the execution strategy
+            produced by a planning agent. Accumulated across nodes via
+            ``operator.add``. Steps are appended in node execution order;
+            parallel nodes should not append to ``plan`` concurrently.
+        critic_feedback: Feedback strings collected during the Critic loop.
+            Accumulated across nodes via ``operator.add``. Contains only
+            Critic-loop output — a non-empty list does not necessarily signal
+            a hard failure.
+        metadata: Key-value pairs containing database schema results (e.g.
+            table names, column definitions, data-source identifiers).
+            ``None`` when not yet populated.
+        semantic_layer: Dictionary representing the generated semantic layer
+            content. ``None`` before the semantic layer generation step runs.
     """
 
+    plan: Annotated[list[str], operator.add]
+    critic_feedback: Annotated[list[str], operator.add]
     metadata: dict[str, Any] | None = None
-    plan: str | None = None
     semantic_layer: dict[str, Any] | None = None
