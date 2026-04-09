@@ -14,17 +14,20 @@ class LNKState(MessagesState):  # type: ignore[misc]
         messages: Inherited list of chat messages (from MessagesState).
         plan: Ordered list of steps representing the execution strategy
             produced by a planning agent. Accumulated across nodes via
-            ``operator.add``.
+            ``operator.add``. Steps are appended in node execution order;
+            parallel nodes should not append to ``plan`` concurrently.
+        critic_feedback: Feedback strings collected during the Critic loop.
+            Accumulated across nodes via ``operator.add``. Contains only
+            Critic-loop output — a non-empty list does not necessarily signal
+            a hard failure.
         metadata: Key-value pairs containing database schema results (e.g.
             table names, column definitions, data-source identifiers).
             ``None`` when not yet populated.
         semantic_layer: Dictionary representing the generated semantic layer
             content. ``None`` before the semantic layer generation step runs.
-        errors: List of error/feedback strings collected during the Critic
-            loop. Accumulated across nodes via ``operator.add``.
     """
 
-    plan: Annotated[list[str], operator.add] = []
+    plan: Annotated[list[str], operator.add]
+    critic_feedback: Annotated[list[str], operator.add]
     metadata: dict[str, Any] | None = None
     semantic_layer: dict[str, Any] | None = None
-    errors: Annotated[list[str], operator.add] = []
