@@ -42,6 +42,9 @@ line-length = 88
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "S"]
 
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
 [tool.mypy]
 python_version = "3.13"
 strict = true

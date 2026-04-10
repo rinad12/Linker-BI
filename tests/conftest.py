@@ -7,15 +7,15 @@ REPORTS_DIR = Path(__file__).parent.parent / "reports"
 
 
 def pytest_runtest_logreport(report):
-    if report.when != "call":  # только фаза выполнения, не setup/teardown
+    if report.when != "call":  # execution phase only, not setup/teardown
         return
 
     REPORTS_DIR.mkdir(exist_ok=True)
 
-    # tests/test_discoveryagent.py::test_foo  →  test_discoveryagent
+    # tests/test_discoveryagent.py::test_foo -> test_discoveryagent
     module = Path(report.nodeid.split("::")[0]).stem
-    date = datetime.date.today().isoformat()
-    filepath = REPORTS_DIR / f"{module}_{date}.txt"
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    filepath = REPORTS_DIR / f"{module}_{timestamp}.txt"
 
     status = "PASSED" if report.passed else "FAILED"
     line = f"[{status}] {report.nodeid} ({report.duration:.4f}s)\n"

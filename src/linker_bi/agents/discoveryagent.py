@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from typing import Any
 
 from sqlalchemy import Engine, inspect
@@ -65,7 +66,7 @@ class DiscoveryAgent(LNKBaseAgent):
 
         return tables
 
-    async def execute(self, _state: LNKState) -> dict[str, Any]:
+    async def execute(self, _state: LNKState | None) -> dict[str, Any]:
         """Introspect the database and return updated state with schema metadata.
 
         Returns:
@@ -74,4 +75,5 @@ class DiscoveryAgent(LNKBaseAgent):
             Each table contains ``columns`` (with ``name``, ``type``,
             ``nullable``, ``default``), ``primary_key``, and ``foreign_keys``.
         """
-        return {"metadata": {"tables": self._introspect()}}
+        tables = await asyncio.to_thread(self._introspect)
+        return {"metadata": {"tables": tables}}

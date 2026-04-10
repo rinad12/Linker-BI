@@ -4,6 +4,7 @@ from unittest.mock import MagicMock
 
 import pytest
 from sqlalchemy import Column, ForeignKey, Integer, MetaData, String, Table, create_engine
+from sqlalchemy.pool import StaticPool
 
 from linker_bi.agents.discoveryagent import DiscoveryAgent
 
@@ -15,7 +16,11 @@ from linker_bi.agents.discoveryagent import DiscoveryAgent
 
 @pytest.fixture
 def engine():
-    e = create_engine("sqlite://")  # in-memory, no file
+    e = create_engine(
+        "sqlite://",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
     meta = MetaData()
     Table(
         "users",
@@ -81,20 +86,17 @@ def test_introspect_no_foreign_keys_on_users(agent):
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.asyncio
 async def test_execute_returns_metadata_key(agent):
     result = await agent.execute(None)
     assert "metadata" in result
 
 
-@pytest.mark.asyncio
 async def test_execute_metadata_contains_tables(agent):
     result = await agent.execute(None)
     assert "tables" in result["metadata"]
     assert set(result["metadata"]["tables"].keys()) == {"users", "orders"}
 
 
-@pytest.mark.asyncio
 async def test_execute_does_not_call_llm(agent):
     await agent.execute(None)
     agent.llm.assert_not_called()
