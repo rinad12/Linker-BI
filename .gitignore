@@ -68,3 +68,6 @@ Thumbs.db
 
 # Claude
 .claude/
+
+# Test reports
+reports/
